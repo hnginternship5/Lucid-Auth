@@ -36,15 +36,15 @@ return [
     ],
 
     'facebook' => [
-        'client_id'     => '2207275122694029',
-        'client_secret' => '3d51e272768d53f8f16d0bcb2e7bbd64',
-        'redirect'      => 'https://auth.techteel.com/login/facebook/callback',
+        'client_id'     => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        'redirect'      => env('FACEBOOK_URL'),
     ],
 
     'google' => [
-        'client_id'     => '302599861511-epoto9bjfkd5cvkk0450d3r1qu7g0pgd.apps.googleusercontent.com',
-        'client_secret' => 'fllMCVykG9bDIwRGnbL8SB3x',
-        'redirect'      => 'https://auth.techteel.com/login/google/callback',
+        'client_id'     => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect'      => env('GOOGLE_URL'),
     ],
 
 ];
