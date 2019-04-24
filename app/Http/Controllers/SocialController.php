@@ -33,7 +33,7 @@ class SocialController extends Controller
                 'provider'      => $provider,
             ]);
             $login_user = array("name" => $user->name, "email" => $user->email, "pic" => $user->image);
-            return json_encode($login_user);
+            Redirect::to("https://localhost:8000/login/{$provider}/callback?data={$login_user}");
         }
     }
 
