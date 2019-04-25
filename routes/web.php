@@ -19,6 +19,7 @@ Route::get('/', function () {
 Route::get('login/{provider}', 'SocialController@redirect');
 Route::get('login/{provider}/callback', 'SocialController@Callback');
 Auth::routes();
-
+Route::get('auth/', function () {
+  return view('auth');
+});
 Route::get('/home', 'HomeController@index')->name('home');
- 

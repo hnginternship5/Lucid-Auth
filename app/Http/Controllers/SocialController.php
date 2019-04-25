@@ -13,7 +13,7 @@ class SocialController extends Controller
     {
     	return Socialite::driver($provider)->redirect();
     }
- 
+
     public function Callback($provider)
     {
         $userSocial 	=   Socialite::driver($provider)->stateless()->user();
@@ -22,7 +22,8 @@ class SocialController extends Controller
         if($users){
             Auth::login($users);
             $login_user = array("name" => Auth::user()->name, "email" => Auth::user()->email, "pic" => Auth::user()->image);
-            return json_encode($login_user);
+             json_encode($login_user);
+            return redirect()->to('/auth?s=done&n='.Auth::user()->name.'&e='.Auth::user()->email.'&p='.Auth::user()->image.'')->send();
         }else{
 
             $user = User::create([
@@ -33,7 +34,9 @@ class SocialController extends Controller
                 'provider'      => $provider,
             ]);
             $login_user = array("name" => $user->name, "email" => $user->email, "pic" => $user->image);
-            Redirect::to("https://localhost:8000/login/{$provider}/callback?data={$login_user}");
+          //  return redirect()->to('/auth?s=done')->send();
+            Redirect::to("/auth?s=done");
+          //  Redirect::to("https://localhost:8000/login/{$provider}/callback?data={$login_user}");
         }
     }
 
