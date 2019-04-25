@@ -23,7 +23,7 @@ class SocialController extends Controller
             Auth::login($users);
             $login_user = array("name" => Auth::user()->name, "email" => Auth::user()->email, "pic" => Auth::user()->image);
              json_encode($login_user);
-            return redirect()->to('/auth?s=done&n='.Auth::user()->name.'&e='.Auth::user()->email.'&p='.Auth::user()->image.'')->send();
+            return redirect()->to("http://localhost:3000/auth/".Auth::user()->provider."/".Auth::user()->provider_id)->send();
         }else{
 
             $user = User::create([
@@ -35,8 +35,8 @@ class SocialController extends Controller
             ]);
             $login_user = array("name" => $user->name, "email" => $user->email, "pic" => $user->image);
           //  return redirect()->to('/auth?s=done')->send();
-            Redirect::to("/auth?s=done");
-          //  Redirect::to("https://localhost:8000/login/{$provider}/callback?data={$login_user}");
+          return redirect()->to("http://localhost:3000/auth/".$user->provider."/".$user->provider_id)->send();
+            //Redirect::to('/auth?s=done&n='.$user->name.'&e='.$user->email.'&p='.Auth::user()->image.'');
         }
     }
 
