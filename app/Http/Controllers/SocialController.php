@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Socialite;
 use Auth;
 use App\User;
@@ -40,5 +41,16 @@ class SocialController extends Controller
         }
     }
 
+    public function validateCheck($provider, $token)
+    {
+        //die($token);
+        $user = User::where(['provider' => $provider, 'provider_id' => $token])->first();
+        if($user){
+            return response()->json($user);
+        }
+        else{
+            return array("error" => true, "message" => "you are not authorize to be here.");
+        }
+    }
 
 }
