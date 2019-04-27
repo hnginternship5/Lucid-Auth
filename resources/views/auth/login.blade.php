@@ -12,6 +12,7 @@
                         <div class="col-md-6 offset-md-4">
                             <a href="{{ url('/login/facebook') }}" class="btn btn-facebook"><i class="fa fa-facebook"></i> Facebook</a>
                             <a href="{{ url('/login/google') }}" class="btn btn-facebook"><i class="fa fa-facebook"></i> Google</a>
+                            <a href="{{ url('/login/email/mail') }}" class="btn btn-facebook"><i class="fa fa-facebook"></i> Email</a>
                         </div>
                     </div>
                 </div>
