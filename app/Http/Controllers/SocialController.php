@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Socialite;
 use Auth;
 use App\User;
+use App\Mail\ZikiMail;
 
 class SocialController extends Controller
 {
@@ -51,6 +53,22 @@ class SocialController extends Controller
         else{
             return array("error" => true, "message" => "you are not authorize to be here.");
         }
+    }
+
+    public function email($provider, $address){
+        $user = User::where(['email' => $address])->first();
+        if ($user) {
+            $secret = md5($user->provider_id);
+            Mail::to($user->email)->send(new ZikiMail($user, $secret));
+            User::where('email', $address)
+                ->where('password', NULL)
+                ->update(['password' => $secret]);
+            $data = array("error" => false, "message" => "Magic link sent successfully, check your email.");
+        }
+        else{
+            $data = array("error" => true, "message" => "Invalid email account, signup with a social account.");
+        }
+        return $data;
     }
 
 }

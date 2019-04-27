@@ -18,3 +18,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/authcheck/{provider}/{token}', 'SocialController@validateCheck');
+Route::get('login/{provider}/mail/{address}', 'SocialController@email');
