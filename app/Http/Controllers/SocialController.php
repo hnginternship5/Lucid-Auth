@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Socialite;
 use Auth;
 use App\User;
@@ -12,8 +15,14 @@ use App\Mail\ZikiMail;
 
 class SocialController extends Controller
 {
+    public function __construct()
+    {
+        session_start();
+        $this->type = Input::get('type');
+    }
     public function redirect($provider)
     {
+        $_SESSION['domain'] = Input::get('url');
     	return Socialite::driver($provider)->redirect();
     }
 
@@ -21,12 +30,16 @@ class SocialController extends Controller
     {
         $userSocial 	=   Socialite::driver($provider)->stateless()->user();
         $users       	=   User::where(['email' => $userSocial->getEmail()])->first();
-
+        try {
+            $host = Crypt::decryptString($_SESSION['domain']);
+        } catch (DecryptException $e) {
+            dd($e);
+        }
         if($users){
             Auth::login($users);
             $login_user = array("name" => Auth::user()->name, "email" => Auth::user()->email, "pic" => Auth::user()->image);
              json_encode($login_user);
-            return redirect()->to("https://ziki.techteel.com/auth/".Auth::user()->provider."/".Auth::user()->provider_id)->send();
+            return redirect()->to("{$host}/auth/".Auth::user()->provider."/".Auth::user()->provider_id)->send();
         }else{
 
             $user = User::create([
@@ -38,7 +51,7 @@ class SocialController extends Controller
             ]);
             $login_user = array("name" => $user->name, "email" => $user->email, "pic" => $user->image);
           //  return redirect()->to('/auth?s=done')->send();
-          return redirect()->to("https://ziki.techteel.com/auth/".$user->provider."/".$user->provider_id)->send();
+          return redirect()->to("{$host}/auth/".$user->provider."/".$user->provider_id)->send();
             //Redirect::to('/auth?s=done&n='.$user->name.'&e='.$user->email.'&p='.Auth::user()->image.'');
         }
     }
@@ -69,6 +82,12 @@ class SocialController extends Controller
             $data = array("error" => true, "message" => "Invalid email account, signup with a social account.");
         }
         return $data;
+    }
+
+    public function encrypter() {
+        $host = Input::get('host');
+        $encrypted = Crypt::encryptString($host);
+        return $encrypted;
     }
 
 }

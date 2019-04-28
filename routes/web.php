@@ -19,8 +19,6 @@ Route::get('/', function () {
 Route::get('login/{provider}', 'SocialController@redirect');
 Route::get('login/{provider}/callback', 'SocialController@Callback');
 Auth::routes();
-Route::get('auth/', function () {
-  return view('auth');
-});
+
 //Route::get('send/{provider}/mail/{address}', 'SocialController@email'); // to test
 Route::get('/home', 'HomeController@index')->name('home');
