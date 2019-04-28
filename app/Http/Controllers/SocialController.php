@@ -68,13 +68,14 @@ class SocialController extends Controller
         }
     }
 
-    public function email($provider, $address){
+    public function email($provider){
+        $address = Input::get('address');
+        $sourcekey = Input::get('domain');
         $user = User::where(['email' => $address])->first();
         if ($user) {
             $secret = md5($user->provider_id);
-            Mail::to($user->email)->send(new ZikiMail($user, $secret));
+            Mail::to($user->email)->send(new ZikiMail($user, $secret, $sourcekey));
             User::where('email', $address)
-                ->where('password', NULL)
                 ->update(['password' => $secret]);
             $data = array("error" => false, "message" => "Magic link sent successfully, check your email.");
         }
@@ -82,6 +83,22 @@ class SocialController extends Controller
             $data = array("error" => true, "message" => "Invalid email account, signup with a social account.");
         }
         return $data;
+    }
+
+    public function magicLink (){
+        $token = Input::get('token');
+        $key = Input::get('sha');
+        $user = User::where(['password' => $token])->first();
+        $host = Crypt::decryptString($key);
+        if ($user) {
+            User::where('email', $user->email)
+                ->update(['provider' => "email"]);
+            //  return redirect()->to('/auth?s=done')->send();
+            return redirect()->to("{$host}/auth/".$user->provider."/".$user->provider_id)->send();
+        }
+        else{
+            return redirect()->to("{$host}");
+        }
     }
 
     public function encrypter() {
