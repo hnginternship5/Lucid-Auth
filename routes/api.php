@@ -20,4 +20,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/authcheck/{provider}/{token}', 'SocialController@validateCheck');
 Route::get('login/{provider}', 'SocialController@email');
 Route::get('/encrpt', 'SocialController@encrypter');
-Route::get('login/auth/magiclink', 'SocialController@magicLink');
+Route::get('/login/auth/magiclink', 'SocialController@magicLink');

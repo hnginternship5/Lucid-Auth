@@ -22,6 +22,7 @@ class SocialController extends Controller
     }
     public function redirect($provider)
     {
+        $_SESSION['action_type'] = Input::get('type');
         $_SESSION['domain'] = Input::get('url');
     	return Socialite::driver($provider)->redirect();
     }
@@ -39,7 +40,12 @@ class SocialController extends Controller
             Auth::login($users);
             $login_user = array("name" => Auth::user()->name, "email" => Auth::user()->email, "pic" => Auth::user()->image);
              json_encode($login_user);
-            return redirect()->to("{$host}/auth/".Auth::user()->provider."/".Auth::user()->provider_id)->send();
+             if ($_SESSION['action_type'] == 'login') {
+                return redirect()->to("{$host}/auth/".Auth::user()->provider."/".Auth::user()->provider_id)->send();
+             }
+             else{
+                return redirect()->to("{$host}/setup/".Auth::user()->provider."/".Auth::user()->provider_id)->send();
+             }
         }else{
 
             $user = User::create([
@@ -73,10 +79,10 @@ class SocialController extends Controller
         $sourcekey = Input::get('domain');
         $user = User::where(['email' => $address])->first();
         if ($user) {
-            $secret = md5($user->provider_id);
+            $secret = $user->provider_id;
             Mail::to($user->email)->send(new ZikiMail($user, $secret, $sourcekey));
             User::where('email', $address)
-                ->update(['password' => $secret]);
+                ->update(['password' => $user->provider_id]);
             $data = array("error" => false, "message" => "Magic link sent successfully, check your email.");
         }
         else{
@@ -89,12 +95,16 @@ class SocialController extends Controller
         $token = Input::get('token');
         $key = Input::get('sha');
         $user = User::where(['password' => $token])->first();
-        $host = Crypt::decryptString($key);
+        try {
+            $host = Crypt::decrypt($key);
+        } catch (DecryptException $e) {
+            dd($e);
+        }
         if ($user) {
             User::where('email', $user->email)
                 ->update(['provider' => "email"]);
             //  return redirect()->to('/auth?s=done')->send();
-            return redirect()->to("{$host}/auth/".$user->provider."/".$user->provider_id)->send();
+            return redirect()->to("{$host}/auth/{$user->provider}/{$user->provider_id}")->send();
         }
         else{
             return redirect()->to("{$host}");
