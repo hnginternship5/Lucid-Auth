@@ -22,6 +22,7 @@ class SocialController extends Controller
     }
     public function redirect($provider)
     {
+        $_SESSION['action_type'] = Input::get('type');
         $_SESSION['domain'] = Input::get('url');
     	return Socialite::driver($provider)->redirect();
     }
@@ -39,7 +40,12 @@ class SocialController extends Controller
             Auth::login($users);
             $login_user = array("name" => Auth::user()->name, "email" => Auth::user()->email, "pic" => Auth::user()->image);
              json_encode($login_user);
-            return redirect()->to("{$host}/auth/".Auth::user()->provider."/".Auth::user()->provider_id)->send();
+             if ($_SESSION['action_type'] == 'login') {
+                return redirect()->to("{$host}/auth/".Auth::user()->provider."/".Auth::user()->provider_id)->send();
+             }
+             else{
+                return redirect()->to("{$host}/setup/".Auth::user()->provider."/".Auth::user()->provider_id)->send();
+             }
         }else{
 
             $user = User::create([
@@ -98,7 +104,7 @@ class SocialController extends Controller
             User::where('email', $user->email)
                 ->update(['provider' => "email"]);
             //  return redirect()->to('/auth?s=done')->send();
-            return redirect()->to("{$host}/auth/{$user->provider}/{$user->provider_id}?setup=true")->send();
+            return redirect()->to("{$host}/auth/{$user->provider}/{$user->provider_id}")->send();
         }
         else{
             return redirect()->to("{$host}");
