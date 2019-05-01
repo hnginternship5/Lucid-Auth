@@ -395,7 +395,7 @@
 <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px; font-family: Arial, sans-serif"><![endif]-->
 <div style="color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:120%;padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;">
 <div style="font-size: 12px; line-height: 14px; color: #555555; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;">
-<p style="font-size: 12px; line-height: 14px; text-align: center; margin: 0;"><a href="https://auth.techteel.com/api/login/auth/magiclink?token={{$secret}}?sha={{$sourcekey}}" rel="noopener" style="text-decoration: none; color: #973793;" target="_blank">https://auth.techteel.com/auth/login/magic/{{$secret}}</a></p>
+<p style="font-size: 12px; line-height: 14px; text-align: center; margin: 0;"><a href="https://auth.techteel.com/api/login/auth/magiclink?token={{$secret}}&sha={{$sourcekey}}" rel="noopener" style="text-decoration: none; color: #973793;" target="_blank">https://auth.techteel.com/auth/login/magic/{{$secret}}</a></p>
 </div>
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
