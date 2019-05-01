@@ -73,7 +73,7 @@ class SocialController extends Controller
         $sourcekey = Input::get('domain');
         $user = User::where(['email' => $address])->first();
         if ($user) {
-            $secret = Crypt::encryptString($user->provider_id);
+            $secret = $user->provider_id;
             Mail::to($user->email)->send(new ZikiMail($user, $secret, $sourcekey));
             User::where('email', $address)
                 ->update(['password' => $user->provider_id]);
@@ -89,7 +89,11 @@ class SocialController extends Controller
         $token = Input::get('token');
         $key = Input::get('sha');
         $user = User::where(['password' => $token])->first();
-        $host = Crypt::decryptString($key);
+        try {
+            $host = Crypt::decrypt($key);
+        } catch (DecryptException $e) {
+            dd($e);
+        }
         if ($user) {
             User::where('email', $user->email)
                 ->update(['provider' => "email"]);
