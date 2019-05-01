@@ -19,11 +19,12 @@ class ZikiMail extends Mailable
      */
     public $user;
     public $secret;
-    public function __construct(User $user, $secret)
+    public function __construct(User $user, $secret, $sourcekey)
     {
         //
         $this->user = $user;
         $this->secret = $secret;
+        $this->sourcekey = $sourcekey;
     }
 
     /**

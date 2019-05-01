@@ -73,10 +73,10 @@ class SocialController extends Controller
         $sourcekey = Input::get('domain');
         $user = User::where(['email' => $address])->first();
         if ($user) {
-            $secret = md5($user->provider_id);
+            $secret = Crypt::encryptString($user->provider_id);
             Mail::to($user->email)->send(new ZikiMail($user, $secret, $sourcekey));
             User::where('email', $address)
-                ->update(['password' => $secret]);
+                ->update(['password' => $user->provider_id]);
             $data = array("error" => false, "message" => "Magic link sent successfully, check your email.");
         }
         else{
@@ -94,7 +94,7 @@ class SocialController extends Controller
             User::where('email', $user->email)
                 ->update(['provider' => "email"]);
             //  return redirect()->to('/auth?s=done')->send();
-            return redirect()->to("{$host}/auth/".$user->provider."/".$user->provider_id)->send();
+            return redirect()->to("{$host}/auth/{$user->provider}/{$user->provider_id}?setup=true")->send();
         }
         else{
             return redirect()->to("{$host}");
