@@ -78,15 +78,15 @@ class SocialController extends Controller
         $address = Input::get('address');
         $sourcekey = Input::get('domain');
         $user = User::where(['email' => $address])->first();
-        if ($user) {
+        if (is_null($user)) {
+            $data = array("error" => true, "message" => "Invalid email account, signup with a social account.");
+        }
+        else{
             $secret = $user->provider_id;
             Mail::to($user->email)->send(new ZikiMail($user, $secret, $sourcekey));
             User::where('email', $address)
                 ->update(['password' => $user->provider_id]);
             $data = array("error" => false, "message" => "Magic link sent successfully, check your email.");
-        }
-        else{
-            $data = array("error" => true, "message" => "Invalid email account, signup with a social account.");
         }
         return $data;
     }
