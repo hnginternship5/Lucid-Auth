@@ -21,3 +21,4 @@ Route::get('/authcheck/{provider}/{token}', 'SocialController@validateCheck');
 Route::get('/login/{provider}', 'SocialController@email');
 Route::get('/encrpt', 'SocialController@encrypter');
 Route::get('/login/auth/magiclink', 'SocialController@magicLink');
+Route::get('/update_email', 'SocialController@updateEmail');
