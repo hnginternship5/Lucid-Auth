@@ -97,12 +97,18 @@ class SocialController extends Controller
         $update = User::where('email', $address)
                     ->update(['email' => $new_email]);
         if($update){
-            $data = array("error" => false, "message" => "New Email Updated Successfully");
+            $user = User::where(['email' => $new_email])->first();
+            if($user){
+                return response()->json($user);
+            }
+            else{
+                return array("error" => true, "message" => "you are not authorize to be here.");
+            }
         }
         else{
             $data = array("error" => true, "message" => "New Email Update Failed");
+            return $data;
         }
-        return $data;
     }
 
     public function magicLink (){
