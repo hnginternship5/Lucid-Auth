@@ -91,6 +91,20 @@ class SocialController extends Controller
         return $data;
     }
 
+    public function updateEmail() {
+        $address = Input::get('old_email');
+        $new_email = Input::get('new_email');
+        $update = User::where('email', $address)
+                    ->update(['email' => $new_email]);
+        if($update){
+            $data = array("error" => false, "message" => "New Email Updated Successfully");
+        }
+        else{
+            $data = array("error" => true, "message" => "New Email Update Failed");
+        }
+        return $data;
+    }
+
     public function magicLink (){
         $token = Input::get('token');
         $key = Input::get('sha');
