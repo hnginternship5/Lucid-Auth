@@ -94,12 +94,13 @@ class SocialController extends Controller
     public function updateEmail() {
         $address = Input::get('old_email');
         $new_email = Input::get('new_email');
-        $update = User::where('email', $address)
+        $user = User::where(['email' => $address])->first();
+        $update = User::where('id', $user->id)
                     ->update(['email' => $new_email]);
         if($update){
-            $user = User::where(['email' => $new_email])->first();
-            if($user){
-                return response()->json($user);
+            $new_user = User::where(['email' => $new_email])->first();
+            if($new_user){
+                return response()->json($new_user);
             }
             else{
                 return array("error" => true, "message" => "you are not authorize to be here.");
